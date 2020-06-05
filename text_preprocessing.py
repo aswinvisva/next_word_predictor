@@ -21,8 +21,10 @@ def window(arr, window=3):
 
 def generate(path):
 
+    vocab_size = 50
+
     f = open(path, 'r')
-    text = f.read(25000)
+    text = f.read(100000)
     f.close()
 
     tokenizer = RegexpTokenizer(r'\w+')
@@ -30,7 +32,7 @@ def generate(path):
 
     words = [word.lower() for word in words]
     c = Counter(words)
-    dictionary = c.most_common(100)
+    dictionary = c.most_common(vocab_size)
     print(c)
     print(dictionary)
 
@@ -48,14 +50,23 @@ def generate(path):
 
     for index, word in enumerate(data):
         if word in encoded_dictionary.keys():
-            encoded_targets.append(encoded_dictionary[word])
-            window_list.append(' '.join(windows[index]))
+            encoded_vec = np.zeros(vocab_size)
+            encoded_vec[encoded_dictionary[word]] = 1
+
+            encoded_targets.append(encoded_vec)
+            # window_list.append(' '.join(windows[index]))
+            window_list.append(windows[index])
+
+    encoded_targets = np.array(encoded_targets).reshape(len(encoded_targets), vocab_size)
 
     print(words[0:20])
-    print(window_list)
+    print(window_list[0:20])
     print(encoded_targets[0:20])
 
     print("There are", len(window_list), "samples.")
     print("There are", len(encoded_targets), "samples.")
 
-    return np.array(window_list), np.array(encoded_targets), encoded_dictionary
+    print("Shape", encoded_targets.shape)
+
+
+    return np.array(window_list), encoded_targets, encoded_dictionary

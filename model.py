@@ -14,13 +14,13 @@ from tensorflow.python.keras.models import Model, save_model, load_model
 from tensorflow.python.keras.optimizers import Adam, SGD
 
 physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
-
 module_url = "https://tfhub.dev/google/universal-sentence-encoder-large/5"
 embed = hub.load(module_url)
 
-
 def UniversalEmbedding(x):
+    import tensorflow as tf
+    import tensorflow_hub as hub
+
     results = embed(tf.squeeze(tf.cast(x, tf.string)))
     return keras.backend.concatenate([results])
 
@@ -32,30 +32,27 @@ class PredictorModel:
 
     def build_model(self, embed_size=5, vocab_size=1000):
 
-        input_text = Input(shape=(1,), dtype=tf.string)
-        x = Lambda(UniversalEmbedding, output_shape=(embed_size, 1, 1))(input_text)
-        x = Reshape((-1, 1))(x)
+        input_text = Input(shape=(5,), dtype=tf.string)
+        x = Lambda(UniversalEmbedding, output_shape=(embed_size,))(input_text)
 
-        x = LSTM(256, return_sequences=True)(x)
-        x = LSTM(256, return_sequences=False)(x)
-        x = BatchNormalization()(x)
+        # x = Reshape((embed_size, 1))(x)
+        # x = LSTM(64, return_sequences=True)(x)
+        # x = LSTM(64, return_sequences=False)(x)
 
         x = Dense(512, activation="relu")(x)
         x = Dropout(0.4)(x)
-        x = BatchNormalization()(x)
         x = Dense(256, activation="relu")(x)
         x = Dropout(0.4)(x)
-        x = BatchNormalization()(x)
         output = Dense(vocab_size, activation='softmax', name='output')(x)
 
         self.model = Model(inputs=input_text, outputs=output)
 
-        self.model.compile(optimizer='adam', loss='sparse_categorical_crossentropy',
-                           metrics=['sparse_categorical_accuracy'])
+        self.model.compile(optimizer='adam', loss='categorical_crossentropy',
+                           metrics=['accuracy'])
         self.model.summary()
 
     def fit(self, X, Y):
-        self.model.fit(X, Y, epochs=1000, batch_size=112)
+        self.model.fit(X, Y, epochs=50, batch_size=1)
         save_model(self.model, "model.h5")
 
     def load(self):
