@@ -65,6 +65,6 @@ def get_next_word():
 
     # return the data dictionary as a JSON response
     return flask.jsonify(data)
-#
-# if __name__ == '__main__':
-#     app.run()
+
+if __name__ == '__main__':
+    app.run()
