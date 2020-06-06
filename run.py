@@ -11,7 +11,7 @@ if __name__ == '__main__':
 
     # p.load()
 
-    prediction = p.predict([['That', 'is', 'a', 'good','point']])
+    prediction = p.predict([['Hey', 'How', 'are', 'you', '?']])
     prediction = prediction[0]
 
     top_n = sorted(range(len(prediction)), key=lambda i: prediction[i])[-3:]

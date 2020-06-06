@@ -53,7 +53,7 @@ def get_next_word():
 
     data = {"success": False}
     p = PredictorModel()
-    p.build_model(vocab_size=50)
+    p.build_model(vocab_size=75)
     p.load()
 
     with open('data.json', 'r') as fp:
@@ -74,9 +74,9 @@ def get_next_word():
             # returned predictions
             top_n = sorted(range(len(prediction)), key=lambda i: prediction[i])[-3:]
 
-            first_word = index_map[str(top_n[0])]
+            first_word = index_map[str(top_n[2])]
             second_word = index_map[str(top_n[1])]
-            third_word = index_map[str(top_n[2])]
+            third_word = index_map[str(top_n[0])]
 
             data["first_word"] = str(first_word)
             data["second_word"] = str(second_word)

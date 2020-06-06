@@ -13,8 +13,12 @@ from tensorflow.python.keras.layers import Lambda, Concatenate, Dense, BatchNorm
 from tensorflow.python.keras.models import Model, save_model, load_model
 from tensorflow.python.keras.optimizers import Adam, SGD
 
-physical_devices = tf.config.list_physical_devices('GPU')
+gpus = tf.config.experimental.list_physical_devices('GPU')
+for gpu in gpus:
+        tf.config.experimental.set_memory_growth(gpu, True)
+
 module_url = "https://tfhub.dev/google/universal-sentence-encoder-large/5"
+
 embed = hub.load(module_url)
 
 def UniversalEmbedding(x):
@@ -35,9 +39,10 @@ class PredictorModel:
         input_text = Input(shape=(5,), dtype=tf.string)
         x = Lambda(UniversalEmbedding, output_shape=(embed_size,))(input_text)
 
-        # x = Reshape((embed_size, 1))(x)
-        # x = LSTM(64, return_sequences=True)(x)
-        # x = LSTM(64, return_sequences=False)(x)
+        x = Reshape((-1, 512))(x)
+        x = LSTM(128, return_sequences=True)(x)
+        x = LSTM(128, return_sequences=True)(x)
+        x = LSTM(64, return_sequences=False)(x)
 
         x = Dense(512, activation="relu")(x)
         x = Dropout(0.4)(x)

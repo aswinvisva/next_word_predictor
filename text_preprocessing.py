@@ -21,10 +21,10 @@ def window(arr, window=3):
 
 def generate(path):
 
-    vocab_size = 50
+    vocab_size = 75
 
     f = open(path, 'r')
-    text = f.read(100000)
+    text = f.read(35000)
     f.close()
 
     tokenizer = RegexpTokenizer(r'\w+')
