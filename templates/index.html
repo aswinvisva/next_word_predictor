@@ -34,6 +34,11 @@
 
         }
 
+        document.querySelector("fname").addEventListener("change",function () {
+          alert("Input Changed");
+          process_text();
+        })
+
     </script>
 
 <h1>Next Word Prediction</h1>
@@ -43,7 +48,7 @@
     <h3>Type your text here:</h3>
     <form id = "form" action="javascript:process_text(this)" method="post">
       <label for="fname">Sentence:</label><br>
-      <input type="text" id="fname" name="fname"><br>
+      <input type="text" id="fname" name="fname" onchange="javascript:process_text(this)"><br>
     </form>
 </div>
 <div style="width:300px; float:left;">
