@@ -2,12 +2,12 @@
 
 This project is making use of a transfer learning approach, using Google's Universal Sentence Encoder to predict the next word given a string containing 5 words. 
 
-The architecture of the model consists of Recurrent layers (LSTM) stacked on top of an Embedding layer and finally a fully connected layer 
-to produce a probability distribution of the next word. Class imbalance was faced using oversampling methods such as SMOTE.
-
-The Universal Sentence Encoder is wrapped in a Lambda layer with Tensorflow and stacked on top of reccurent layers, followed by a softmax layer to provide a probability distribution for the next word. The model was trained on a dataset of US blogs containing millions of lines in English. From this, I am using a sliding window approach to get training samples and labels for the model. 
+The Universal Sentence Encoder is wrapped in a Lambda layer with Tensorflow and stacked on top of reccurent layers, followed by a softmax layer to provide a probability distribution for the next word. The model was trained on a dataset of US blogs containing millions of lines in English. From this, I am using a sliding window approach to get training samples and labels for the model. Class imbalance was faced using oversampling methods such as SMOTE.
 
 The model is wrapped into an API using Flask and can be run on local host. 
+
+<img src="https://github.com/aswinvisva/next_word_predictor/blob/master/next_word_prediction.png" width="45%"/>
+<img src="https://github.com/aswinvisva/next_word_predictor/blob/master/next_word_prediction2.png" width="45%"/>
 
 ## Usage for Linux/macOS
 
