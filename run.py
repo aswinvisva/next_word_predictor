@@ -11,8 +11,10 @@ if __name__ == '__main__':
 
     p.load()
 
-    words = ['let', 'me', 'see', 'how', 'i']
+    words = ['let', 'me', 'see', 'how', 'i'] #[155, 55, 118, 73, 4]
+
     num = [dictionary[w] for w in words]
+    print(num)
 
     prediction = p.predict([num])
     prediction = prediction[0]
@@ -23,7 +25,7 @@ if __name__ == '__main__':
     inv_map = {v: k for k, v in dictionary.items()}
 
     with open('data.json', 'w') as fp:
-        json.dump(inv_map, fp)
+        json.dump(dictionary, fp)
 
     for index in top_n:
         print("prediction: ", inv_map[index])

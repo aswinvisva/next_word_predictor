@@ -5,15 +5,52 @@
     <title>Next Word Prediction</title>
 </head>
 <body>
+
+    <script>
+
+        function process_text(form) {
+            var formData = new FormData(document.querySelector('form'));
+
+            var request = new XMLHttpRequest();
+            request.open("POST", "/api/v1/predictor/get_next_word");
+            request.send(formData);
+
+            request.onload=function() {
+
+                json=JSON.parse(request.responseText);
+
+                if (json["success"]) {
+                    var first_word = json["first_word"]
+                    var second_word = json["second_word"]
+                    var third_word = json["third_word"]
+
+                    document.getElementById("first_word").innerHTML= first_word.toString();
+
+                }
+                else {
+                    alert("There was an error processing the request!");
+                }
+            };
+
+        }
+
+    </script>
+
 <h1>Next Word Prediction</h1>
 <h2>By: Aswin Visva</h2>
-<a href="https://github.com/aswinvisva">Github</a>
 
-<form action="/api/v1/predictor/get_next_word" method="post">
-  <label for="fname">Sentence:</label><br>
-  <input type="text" id="fname" name="fname"><br>
+<div style="width:300px; float:left;">
+    <h3>Type your text here:</h3>
+    <form id = "form" action="javascript:process_text(this)" method="post">
+      <label for="fname">Sentence:</label><br>
+      <input type="text" id="fname" name="fname"><br>
+    </form>
+</div>
+<div style="width:300px; float:left;">
+    <h3>Predicted word:</h3>
+    <p id="first_word"></p>
+</div>
 
-</form>
 
 </body>
 </html>

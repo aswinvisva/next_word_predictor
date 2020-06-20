@@ -27,13 +27,13 @@ def get_next_word():
     # view
 
     data = {"success": False}
-    p = PredictorModel()
-    p.build_model(vocab_size=75)
-    p.load()
 
     with open('data.json', 'r') as fp:
         index_map = json.load(fp)
 
+    p = PredictorModel()
+    p.build_model(vocab_size=len(index_map.keys()))
+    p.load()
     # ensure an image was properly uploaded to our endpoint
     if flask.request.method == "POST":
 
@@ -42,16 +42,23 @@ def get_next_word():
             sentence_split = flask.request.form['fname'].split()
             print(sentence_split)
 
-            prediction = p.predict([sentence_split])
+            d = [index_map[w] for w in sentence_split]
+
+            print(d)
+
+            prediction = p.predict([d])
             prediction = prediction[0]
 
             # loop over the results and add them to the list of
             # returned predictions
             top_n = sorted(range(len(prediction)), key=lambda i: prediction[i])[-3:]
+            print(top_n)
 
-            first_word = index_map[str(top_n[2])]
-            second_word = index_map[str(top_n[1])]
-            third_word = index_map[str(top_n[0])]
+            inv_map = {v: k for k, v in index_map.items()}
+
+            first_word = inv_map[(top_n[0])]
+            second_word = inv_map[(top_n[1])]
+            third_word = inv_map[(top_n[2])]
 
             data["first_word"] = str(first_word)
             data["second_word"] = str(second_word)
