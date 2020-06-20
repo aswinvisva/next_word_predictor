@@ -6,7 +6,8 @@ The Universal Sentence Encoder is wrapped in a Lambda layer with Tensorflow and 
 
 The model is wrapped into an API using Flask and can be run on local host. 
 
-![alt](https://github.com/aswinvisva/next_word_predictor/blob/master/next_word_prediction.png) | ![alt](https://github.com/aswinvisva/next_word_predictor/blob/master/next_word_prediction2.png)
+<img src="https://github.com/aswinvisva/next_word_predictor/blob/master/next_word_prediction.png" width="45%"/>
+<img src="https://github.com/aswinvisva/next_word_predictor/blob/master/next_word_prediction2.png" width="45%"/>
 
 ## Usage for Linux/macOS
 
