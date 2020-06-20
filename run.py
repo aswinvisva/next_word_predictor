@@ -7,11 +7,14 @@ if __name__ == '__main__':
     w, l, dictionary = text_preprocessing.generate("en_US/en_US.blogs.txt")
     p = PredictorModel()
     p.build_model(vocab_size=len(dictionary.keys()))
-    p.fit(w, l)
+    # p.fit(w, l)
 
-    # p.load()
+    p.load()
 
-    prediction = p.predict([['Hey', 'How', 'are', 'you', '?']])
+    words = ['let', 'me', 'see', 'how', 'i']
+    num = [dictionary[w] for w in words]
+
+    prediction = p.predict([num])
     prediction = prediction[0]
 
     top_n = sorted(range(len(prediction)), key=lambda i: prediction[i])[-3:]

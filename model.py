@@ -3,15 +3,9 @@ import math
 import tensorflow as tf
 from tensorflow import keras
 import tensorflow_hub as hub
-import numpy as np
-import pandas as pd
-from tensorflow.python.keras import Input
-from tensorflow.python.keras.activations import swish
-from tensorflow.python.keras.callbacks import LearningRateScheduler
 from tensorflow.python.keras.layers import Lambda, Concatenate, Dense, BatchNormalization, Dropout, Bidirectional, LSTM, \
-    Reshape
-from tensorflow.python.keras.models import Model, save_model, load_model
-from tensorflow.python.keras.optimizers import Adam, SGD
+    Reshape, Embedding
+from tensorflow.python.keras.models import Model, save_model, load_model, Sequential
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
@@ -36,28 +30,25 @@ class PredictorModel:
 
     def build_model(self, embed_size=5, vocab_size=1000):
 
-        input_text = Input(shape=(5,), dtype=tf.string)
-        x = Lambda(UniversalEmbedding, output_shape=(embed_size,))(input_text)
+        model = Sequential()
+        model.add(Embedding(vocab_size, 2, input_length=embed_size))
+        model.add(Bidirectional(LSTM(128, return_sequences=True)))
+        model.add(LSTM(128, return_sequences=True))
+        model.add(LSTM(64, return_sequences=False))
+        model.add(Dense(512, activation="relu"))
+        model.add(Dropout(0.4))
+        model.add(Dense(256, activation="relu"))
+        model.add(Dropout(0.4))
+        model.add(Dense(vocab_size, activation='softmax', name='output'))
 
-        x = Reshape((-1, 512))(x)
-        x = LSTM(128, return_sequences=True)(x)
-        x = LSTM(128, return_sequences=True)(x)
-        x = LSTM(64, return_sequences=False)(x)
+        self.model = model
 
-        x = Dense(512, activation="relu")(x)
-        x = Dropout(0.4)(x)
-        x = Dense(256, activation="relu")(x)
-        x = Dropout(0.4)(x)
-        output = Dense(vocab_size, activation='softmax', name='output')(x)
-
-        self.model = Model(inputs=input_text, outputs=output)
-
-        self.model.compile(optimizer='adam', loss='categorical_crossentropy',
-                           metrics=['accuracy'])
+        self.model.compile(optimizer='adam', loss='sparse_categorical_crossentropy',
+                           metrics=['sparse_categorical_accuracy'])
         self.model.summary()
 
     def fit(self, X, Y):
-        self.model.fit(X, Y, epochs=50, batch_size=1)
+        self.model.fit(X, Y, epochs=250, batch_size=32)
         save_model(self.model, "model.h5")
 
     def load(self):
