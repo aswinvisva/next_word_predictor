@@ -12,8 +12,9 @@ import itertools as it
 import json
 from imblearn.over_sampling import SMOTE
 
+
 def window(arr, window=3):
-    if (window > len(arr)): return None
+    if window > len(arr): return None
 
     windows = []
     labels = []
@@ -24,8 +25,8 @@ def window(arr, window=3):
 
     return windows, labels
 
-def n_gram_generate(path):
 
+def n_gram_generate(path):
     f = open(path, 'r')
     text = f.read(1000000)
     f.close()
@@ -36,6 +37,7 @@ def n_gram_generate(path):
     count = Counter(threegrams)
 
     print(count)
+
 
 def generate(path):
     f = open(path, 'r')
@@ -79,13 +81,13 @@ def generate(path):
     x = []
     y = []
 
-    #Remove all words which occur less than 6 times so that SMOTE can be used
+    # Remove all words which occur less than 6 times so that SMOTE can be used
     for index, word in enumerate(encoded_targets):
         if embed_dictionary[word] > 6:
             x.append(window_list[index])
             y.append(encoded_targets[index])
 
-    #Oversample less frequent classes using SMOTE
+    # Oversample less frequent classes using SMOTE
     sm = SMOTE()
     X_res, y_res = sm.fit_resample(np.array(x), np.array(y))
 
@@ -95,6 +97,5 @@ def generate(path):
     print("There are", len(y_res), "targets.")
 
     print("Shape", encoded_targets.shape)
-
 
     return np.array(X_res), y_res, encoded_dictionary
